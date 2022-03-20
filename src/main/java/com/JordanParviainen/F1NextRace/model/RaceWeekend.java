@@ -1,5 +1,9 @@
 package com.JordanParviainen.F1NextRace.model;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.io.FileReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,16 +17,7 @@ public class RaceWeekend {
     private String countryFlagImageURL;
 
     public RaceWeekend() {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://ergast.com/api/f1/current/next.json"))
-                .build();
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-        } catch(Exception e){
-            System.out.println("Cos nie dziala");
-        }
+        fetchLatestData();
     }
 
     public Date getRaceStartDate() {
@@ -39,5 +34,24 @@ public class RaceWeekend {
 
     public String getCountryFlagImageURL() {
         return countryFlagImageURL;
+    }
+
+    public Boolean fetchLatestData() {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://ergast.com/api/f1/current/next.json"))
+                .build();
+        try {
+            HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println(httpResponse.body());
+            Object obj = new JSONParser().parse(httpResponse.body());
+            JSONObject jo = (JSONObject) obj;
+            for(Object o : jo.values()){
+                System.out.println(o.toString());
+            }
+            return true;
+        } catch(Exception e){
+            return false;
+        }
     }
 }
