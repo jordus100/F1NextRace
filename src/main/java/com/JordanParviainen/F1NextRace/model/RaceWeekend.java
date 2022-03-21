@@ -1,7 +1,6 @@
 package com.JordanParviainen.F1NextRace.model;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.google.gson.*;
 
 import java.io.FileReader;
 import java.net.URI;
@@ -9,6 +8,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 
 public class RaceWeekend {
     private Date raceStartDate;
@@ -43,15 +44,36 @@ public class RaceWeekend {
                 .build();
         try {
             HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(httpResponse.body());
-            Object obj = new JSONParser().parse(httpResponse.body());
-            JSONObject jo = (JSONObject) obj;
-            for(Object o : jo.values()){
-                System.out.println(o.toString());
-            }
+            JsonElement tree = JsonParser.parseString(httpResponse.body());
+            System.out.println(searchJsonTree(tree, "limit"));
             return true;
         } catch(Exception e){
             return false;
         }
+    }
+
+    String searchJsonTree(JsonElement tree, String key){
+        if(tree.isJsonObject()){
+            if(((JsonObject) tree).has(key))
+                return ((JsonObject) tree).get(key).getAsString();
+            else{
+                for(Map.Entry<String, JsonElement> entry: ((JsonObject) tree).entrySet()) {
+                    String value = searchJsonTree(entry.getValue(), key);
+                    if (value != null) return value;
+                    else return null;
+                }
+            }
+        }
+        else if(tree.isJsonArray()){
+            Iterator<JsonElement> jsonElements = ((JsonArray) tree).iterator();
+            while(jsonElements.hasNext()){
+                String value = searchJsonTree(jsonElements.next(), key);
+                if(value != null) return value;
+                else return null;
+            }
+        }
+        else if(tree.isJsonPrimitive()) return null;
+        else return null;
+        return key;
     }
 }
