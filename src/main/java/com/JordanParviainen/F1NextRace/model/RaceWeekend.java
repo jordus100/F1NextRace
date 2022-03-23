@@ -44,36 +44,15 @@ public class RaceWeekend {
                 .build();
         try {
             HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JsonElement tree = JsonParser.parseString(httpResponse.body());
-            System.out.println(searchJsonTree(tree, "limit"));
+            JsonElement jsonTree = JsonParser.parseString(httpResponse.body());
+            GPName = JsonHandler.searchJsonTree(jsonTree, "raceName");
+            String dateDay = JsonHandler.searchJsonTree(jsonTree, "date");
+            String dateTime = JsonHandler.searchJsonTree(jsonTree, "time");
             return true;
         } catch(Exception e){
             return false;
         }
     }
 
-    String searchJsonTree(JsonElement tree, String key){
-        if(tree.isJsonObject()){
-            if(((JsonObject) tree).has(key))
-                return ((JsonObject) tree).get(key).getAsString();
-            else{
-                for(Map.Entry<String, JsonElement> entry: ((JsonObject) tree).entrySet()) {
-                    String value = searchJsonTree(entry.getValue(), key);
-                    if (value != null) return value;
-                    else return null;
-                }
-            }
-        }
-        else if(tree.isJsonArray()){
-            Iterator<JsonElement> jsonElements = ((JsonArray) tree).iterator();
-            while(jsonElements.hasNext()){
-                String value = searchJsonTree(jsonElements.next(), key);
-                if(value != null) return value;
-                else return null;
-            }
-        }
-        else if(tree.isJsonPrimitive()) return null;
-        else return null;
-        return key;
-    }
+
 }
