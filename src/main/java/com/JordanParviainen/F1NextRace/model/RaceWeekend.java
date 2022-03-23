@@ -7,6 +7,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -48,6 +51,11 @@ public class RaceWeekend {
             GPName = JsonHandler.searchJsonTree(jsonTree, "raceName");
             String dateDay = JsonHandler.searchJsonTree(jsonTree, "date");
             String dateTime = JsonHandler.searchJsonTree(jsonTree, "time");
+            StringBuffer sb= new StringBuffer(dateTime);
+            sb.deleteCharAt(sb.length()-1);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            raceStartDate = dateFormat.parse(dateDay + " " + dateTime, new ParsePosition(0));
+            System.out.println(raceStartDate.toString());
             return true;
         } catch(Exception e){
             return false;
