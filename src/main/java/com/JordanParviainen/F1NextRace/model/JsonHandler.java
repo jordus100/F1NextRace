@@ -12,6 +12,11 @@ public class JsonHandler {
 
     private static int occurrenceAux;
 
+    /*
+        searches for a simple string in a json file by its key and the number of
+        occurrence from the beginning of the file in case of the same key being used
+        multiple times in the file
+     */
     public static String searchJsonTree(JsonElement jsonTree, String key, int occurrence){
         occurrenceAux = occurrence;
         if(jsonTree.isJsonObject()){
