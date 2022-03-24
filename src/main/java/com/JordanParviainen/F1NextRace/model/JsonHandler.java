@@ -9,29 +9,50 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class JsonHandler {
-    public static String searchJsonTree(JsonElement jsonTree, String key){
+
+    private static int occurrenceAux;
+
+    public static String searchJsonTree(JsonElement jsonTree, String key, int occurrence){
+        occurrenceAux = occurrence;
         if(jsonTree.isJsonObject()){
-            if(((JsonObject) jsonTree).has(key))
-                return ((JsonObject) jsonTree).get(key).getAsString();
-            else{
-                for(Map.Entry<String, JsonElement> entry: ((JsonObject) jsonTree).entrySet()) {
-                    String value = searchJsonTree(entry.getValue(), key);
-                    if (value != null) return value;
+            for(Map.Entry<String, JsonElement> entry: ((JsonObject) jsonTree).entrySet()) {
+                String value;
+                if(entry.getKey().equals(key))
+                    if(entry.getValue().isJsonPrimitive()) // our method only searches for simple strings
+                        value = ((JsonPrimitive)entry.getValue()).getAsString();
+                    else
+                        value = null;
+                else
+                    if( !entry.getValue().isJsonPrimitive())
+                        value = searchJsonTree(entry.getValue(), key, occurrenceAux);
+                    else
+                        value = null;
+                if (value != null){
+                    if(occurrenceAux == 1)
+                        return value;
+                    else{
+                        occurrenceAux--;
+                        continue;
+                    }
                 }
-                return null;
             }
+            return null;
         }
         else if(jsonTree.isJsonArray()){
             Iterator<JsonElement> jsonElements = ((JsonArray) jsonTree).iterator();
             while(jsonElements.hasNext()){
-                String value = searchJsonTree(jsonElements.next(), key);
-                if(value != null) return value;
+                //JsonElement arrayElement = jsonElements.next();
+                String value = searchJsonTree(jsonElements.next(), key, occurrenceAux);
+                if(value != null){
+                    if(occurrenceAux == 1)
+                        return value;
+                    else{
+                        occurrenceAux--;
+                        continue;
+                    }
+                }
             }
             return null;
-        }
-        else if(jsonTree.isJsonPrimitive()){
-            if(((JsonPrimitive)jsonTree).getAsString().equals(key)) return ((JsonPrimitive)jsonTree).getAsString();
-            else return null;
         }
         else return null;
     }

@@ -21,7 +21,8 @@ public class RaceWeekend {
     private String countryFlagImageURL;
 
     public RaceWeekend() {
-        fetchLatestData();
+        try{fetchLatestData();}
+        catch (Exception e){;}
     }
 
     public Date getRaceStartDate() {
@@ -40,26 +41,24 @@ public class RaceWeekend {
         return countryFlagImageURL;
     }
 
-    public Boolean fetchLatestData() {
+    public Boolean fetchLatestData() throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("http://ergast.com/api/f1/current/next.json"))
                 .build();
-        try {
-            HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
-            JsonElement jsonTree = JsonParser.parseString(httpResponse.body());
-            GPName = JsonHandler.searchJsonTree(jsonTree, "raceName");
-            String dateDay = JsonHandler.searchJsonTree(jsonTree, "date");
-            String dateTime = JsonHandler.searchJsonTree(jsonTree, "time");
-            StringBuffer sb= new StringBuffer(dateTime);
-            sb.deleteCharAt(sb.length()-1);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            raceStartDate = dateFormat.parse(dateDay + " " + dateTime, new ParsePosition(0));
-            System.out.println(raceStartDate.toString());
-            return true;
-        } catch(Exception e){
-            return false;
-        }
+        HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+        JsonElement jsonTree = JsonParser.parseString(httpResponse.body());
+        //GPName = JsonHandler.searchJsonTree(jsonTree, "raceName", 1);
+        //String dateDay = JsonHandler.searchJsonTree(jsonTree, "date", 2);
+        String dateTime = JsonHandler.searchJsonTree(jsonTree, "time",3);
+        /*
+        StringBuffer sb= new StringBuffer(dateTime);
+        sb.deleteCharAt(sb.length()-1);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        raceStartDate = dateFormat.parse(dateDay + " " + dateTime, new ParsePosition(0));
+        */
+        System.out.println(dateTime);
+        return true;
     }
 
 
