@@ -10,12 +10,14 @@ import java.net.http.HttpResponse;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 public class RaceWeekend {
     private Date raceStartDate;
     private Date qualiStartDate;
     private String GPName;
     private String countryFlagImageURL;
+    private int imageSize = 640; // a limited amount of values is possible, check Flagpedia API docs at "https://flagpedia.net/download/api"
 
     public RaceWeekend() {
         try{fetchLatestData();}
@@ -38,11 +40,9 @@ public class RaceWeekend {
         return countryFlagImageURL;
     }
 
-    public Boolean fetchLatestData() throws Exception {
-        HttpResponse<String> httpResponse;
-        httpResponse = callApi("http://ergast.com/api/f1/current/next.json");
-        JsonElement jsonTree;
-        jsonTree = JsonParser.parseString(httpResponse.body());
+    public void fetchLatestData() throws Exception {
+        // downloading data from a public API containing up-to-date statistical data about Formula 1
+        JsonElement jsonTree = getJsonFromApi("http://ergast.com/api/f1/current/next.json");
 
         GPName = JsonHandler.searchJsonTree(jsonTree, "raceName", 1);
 
@@ -51,24 +51,24 @@ public class RaceWeekend {
         String qualiDateDay = JsonHandler.searchJsonTree(jsonTree, "date", 5);
         String qualiDateTime = JsonHandler.searchJsonTree(jsonTree, "time",5);
 
+        String countryName = JsonHandler.searchJsonTree(jsonTree, "country", 1);
+
         raceStartDate = convertToDate(raceDateTime, raceDateDay);
         qualiStartDate = convertToDate(qualiDateTime, qualiDateDay);
 
-        httpResponse = callApi("https://serpapi.com/search.json?q=SaudiArabiaFlag&tbm=isch&ijn=0&api_key=eae31813841545b64c7a8828e6c820e34fc741ea56701bd9e727a49b6c8bb75f");
-        jsonTree = JsonParser.parseString(httpResponse.body());
-        countryFlagImageURL = JsonHandler.searchJsonTree(jsonTree, "link", 2);
-
+        String flagCode = getFlagCode(getJsonFromApi("https://flagcdn.com/en/codes.json"), countryName);
+        countryFlagImageURL = "https://flagcdn.com/w" + imageSize + "/" + flagCode + ".png";
         System.out.println(countryFlagImageURL);
-        return true;
+
     }
 
-    private HttpResponse<String> callApi(String url) throws IOException, InterruptedException {
+    private JsonElement getJsonFromApi(String url) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .build();
         HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return httpResponse;
+        return JsonParser.parseString(httpResponse.body());
     }
 
     // this is not a very universal method, it just works for the date strings from the Ergast API
@@ -80,6 +80,14 @@ public class RaceWeekend {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
         date = dateFormat.parse(day + " " + time, new ParsePosition(0));
         return date;
+    }
+
+    private String getFlagCode(JsonElement jsonTree, String countryName){
+        for(Map.Entry<String, JsonElement> entry: ((JsonObject) jsonTree).entrySet()){
+            if(entry.getValue().getAsString().equals(countryName))
+                return entry.getKey().toString();
+        }
+        return null;
     }
 
 }
