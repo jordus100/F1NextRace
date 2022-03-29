@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/raceweekend")
 public class RaceWeekendResource {
 
-    private final RaceWeekend raceWeekend;
+    private RaceWeekend raceWeekend;
 
     public RaceWeekendResource() {
         this.raceWeekend = new RaceWeekend();
     }
 
     @GetMapping("/get")
-    public ResponseEntity<RaceWeekend> getRaceWeekend() {
+    public ResponseEntity<RaceWeekend> fetchRaceWeekend() {
         return new ResponseEntity<RaceWeekend>(raceWeekend, HttpStatus.OK);
     }
 
