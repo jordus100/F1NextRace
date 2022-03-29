@@ -9,19 +9,20 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
 
 public class RaceWeekend {
     private Date raceStartDate;
     private Date qualiStartDate;
-    private String GPName;
+    private String gPName;
     private String countryFlagImageURL;
     private int imageSize = 640; // a limited amount of values is possible, check Flagpedia API docs at "https://flagpedia.net/download/api"
 
     public RaceWeekend() {
-        try{fetchLatestData();}
-        catch (Exception e){;}
+        try{ fetchData(); }
+        catch (Exception e) { }
     }
 
     public Date getRaceStartDate() {
@@ -32,19 +33,19 @@ public class RaceWeekend {
         return qualiStartDate;
     }
 
-    public String getGPName() {
-        return GPName;
+    public String getgPName() {
+        return gPName;
     }
 
     public String getCountryFlagImageURL() {
         return countryFlagImageURL;
     }
 
-    public void fetchLatestData() throws Exception {
+    public void fetchData() throws Exception {
         // downloading data from a public API containing up-to-date statistical data about Formula 1
         JsonElement jsonTree = getJsonFromApi("http://ergast.com/api/f1/current/next.json");
 
-        GPName = JsonHandler.searchJsonTree(jsonTree, "raceName", 1);
+        gPName = JsonHandler.searchJsonTree(jsonTree, "raceName", 1);
 
         String raceDateDay = JsonHandler.searchJsonTree(jsonTree, "date", 1);
         String raceDateTime = JsonHandler.searchJsonTree(jsonTree, "time",1);
@@ -58,14 +59,15 @@ public class RaceWeekend {
 
         String flagCode = getFlagCode(getJsonFromApi("https://flagcdn.com/en/codes.json"), countryName);
         countryFlagImageURL = "https://flagcdn.com/w" + imageSize + "/" + flagCode + ".png";
-        System.out.println(countryFlagImageURL);
 
     }
 
     private JsonElement getJsonFromApi(String url) throws IOException, InterruptedException {
+
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
+                .timeout(Duration.ofSeconds(10))
                 .build();
         HttpResponse<String> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
         return JsonParser.parseString(httpResponse.body());
