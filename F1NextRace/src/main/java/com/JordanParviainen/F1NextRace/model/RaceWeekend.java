@@ -19,7 +19,8 @@ public class RaceWeekend {
     private Date qualiStartDate;
     private String gPName;
     private String countryFlagImageURL;
-    private int imageSize = 640; // a limited amount of values is possible, check Flagpedia API docs at "https://flagpedia.net/download/api"
+    private int imageSize = 640; /* a limited amount of values is possible, check Flagpedia API docs at
+                                    "https://flagpedia.net/download/api" */
 
     public static Boolean initRaceWeekend(){
         if(raceWeekend == null){
