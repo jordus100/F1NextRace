@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class RaceWeekend {
+    private static RaceWeekend raceWeekend;
 
     private Date raceStartDate;
     private Date qualiStartDate;
@@ -21,7 +22,19 @@ public class RaceWeekend {
     private String countryFlagImageURL;
     private int imageSize = 640; // a limited amount of values is possible, check Flagpedia API docs at "https://flagpedia.net/download/api"
 
-    public RaceWeekend() {
+    public static Boolean initRaceWeekend(){
+        if(raceWeekend != null){
+            raceWeekend = new RaceWeekend();
+            return true;
+        }
+        else return false;
+    }
+
+    public static RaceWeekend getRaceWeekend(){
+        return raceWeekend;
+    }
+
+    private RaceWeekend() {
         try{ fetchData(); }
         catch (Exception e) { }
     }

@@ -11,24 +11,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/raceweekend")
 public class RaceWeekendResource {
 
-    private RaceWeekend raceWeekend;
 
     public RaceWeekendResource() {
-        this.raceWeekend = new RaceWeekend();
+        RaceWeekend.initRaceWeekend();
     }
 
     @GetMapping("/get")
     public ResponseEntity<RaceWeekend> fetchRaceWeekend() {
-        return new ResponseEntity<RaceWeekend>(raceWeekend, HttpStatus.OK);
+        return new ResponseEntity<RaceWeekend>(RaceWeekend.getRaceWeekend(), HttpStatus.OK);
     }
 
     @PostMapping("/update")
     public ResponseEntity<RaceWeekend> updateRaceWeekend() {
         try {
-            raceWeekend.fetchData();
-            return new ResponseEntity<RaceWeekend>(raceWeekend, HttpStatus.OK);
+            RaceWeekend.getRaceWeekend().fetchData();
+            return new ResponseEntity<RaceWeekend>(RaceWeekend.getRaceWeekend(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<RaceWeekend>(raceWeekend, HttpStatus.EXPECTATION_FAILED);
+            return new ResponseEntity<RaceWeekend>(RaceWeekend.getRaceWeekend(), HttpStatus.EXPECTATION_FAILED);
         }
     }
 }
