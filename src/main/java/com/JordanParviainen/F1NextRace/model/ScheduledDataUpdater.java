@@ -12,11 +12,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduledDataUpdater {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-
     @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS)
-    public void reportCurrentTime() {
-        Date now = new Date();
-        if(now.after())
+    public void updateRaceWeekend() {
+        if(RaceWeekend.isInitialized()) {
+            Date now = new Date();
+            if (now.after(RaceWeekend.getRaceWeekend().getRaceStartDate())) {
+                try {
+                    RaceWeekend.getRaceWeekend().fetchData();
+                } catch (Exception e) {
+                    System.out.println(e.toString());
+                }
+            }
+        }
     }
 }

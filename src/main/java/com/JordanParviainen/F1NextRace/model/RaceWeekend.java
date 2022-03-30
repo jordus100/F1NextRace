@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class RaceWeekend {
     private static RaceWeekend raceWeekend;
-
     private Date raceStartDate;
     private Date qualiStartDate;
     private String gPName;
@@ -23,7 +22,7 @@ public class RaceWeekend {
     private int imageSize = 640; // a limited amount of values is possible, check Flagpedia API docs at "https://flagpedia.net/download/api"
 
     public static Boolean initRaceWeekend(){
-        if(raceWeekend != null){
+        if(raceWeekend == null){
             raceWeekend = new RaceWeekend();
             return true;
         }
@@ -36,7 +35,12 @@ public class RaceWeekend {
 
     private RaceWeekend() {
         try{ fetchData(); }
-        catch (Exception e) { }
+        catch (Exception e) { System.out.println(e.toString()); }
+    }
+
+    public static Boolean isInitialized() {
+        if (raceWeekend != null) return true;
+        else return false;
     }
 
     public Date getRaceStartDate() {
