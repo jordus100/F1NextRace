@@ -1,0 +1,16 @@
+.timer {
+  font-size: max(5vw, 9vh);
+}
+.timer-ind {
+  font-size: max(2vw, 2vh)
+}
+.timer-col{
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  border: 0px;
+}
+.timer-text {
+  margin-bottom: 0.2vh;
+  padding-bottom: 0.2vh;
+}
+
