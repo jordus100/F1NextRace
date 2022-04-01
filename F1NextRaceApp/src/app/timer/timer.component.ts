@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {DataServiceService} from "../data-service.service";
 import {RaceWeekend} from "../race-weekend";
+import {Data} from "@angular/router";
 
 @Component({
   selector: 'app-timer',
@@ -9,10 +10,10 @@ import {RaceWeekend} from "../race-weekend";
 })
 export class TimerComponent implements OnInit {
 
-  days!: Number;
-  hours!: Number;
-  minutes!: Number;
-  seconds!: Number;
+  days!: number;
+  hours!: number;
+  minutes!: number;
+  seconds!: number;
 
   raceWeekend! : RaceWeekend;
   constructor(private dataService: DataServiceService) { }
@@ -20,7 +21,21 @@ export class TimerComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getRaceWeekendData().subscribe(data => {
       this.raceWeekend = data;
+      this.calcTimerValues(new Date(this.raceWeekend.raceStartDate));
+      setInterval(()=> { this.calcTimerValues(new Date(this.raceWeekend.raceStartDate)) }, 500);
     });
   }
 
+  private calcTimerValues(date: Date){
+    let now: Date = new Date();
+    let timeDifference: number = date.getTime() - now.getTime();
+    timeDifference /= 1000;
+    this.days = Math.floor(timeDifference / (60*60*24));
+    timeDifference -= this.days * (60*60*24);
+    this.hours = Math.floor(timeDifference / (60*60));
+    timeDifference -= this.hours * (60*60);
+    this.minutes = Math.floor(timeDifference / 60);
+    timeDifference -= this.minutes * 60;
+    this.seconds = Math.floor(timeDifference);
+}
 }

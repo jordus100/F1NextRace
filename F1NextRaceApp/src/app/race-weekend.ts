@@ -1,6 +1,6 @@
 export class RaceWeekend {
-  raceStartDate!: Date;
-  qualiStartDate!: Date;
+  raceStartDate!: string;
+  qualiStartDate!: string;
   gPName!: string;
   countryFlagImageURL!: string;
 }
