@@ -3,7 +3,7 @@ My first web project using Spring Boot and Angular, work in progress
 
 The first usable working version has been now finished!
 To boot it up, you need to have the following software installed on your computer:
--Java JDK 17
+-Java JDK 17 <br>
 -Angular
 -there might be something else that I'm forgetting
 
