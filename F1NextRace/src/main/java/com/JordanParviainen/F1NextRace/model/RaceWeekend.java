@@ -11,7 +11,12 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import org.apache.commons.text.similarity.*;
+import org.springframework.beans.factory.annotation.Value;
+
 
 public class RaceWeekend {
     private static RaceWeekend raceWeekend;
@@ -104,11 +109,24 @@ public class RaceWeekend {
     }
 
     private String getFlagCode(JsonElement jsonTree, String countryName){
+        Map<String, String> flagCodesExceptions = new HashMap<String, String>()
+        {{
+            put("USA", "us");
+        }};
+        if(flagCodesExceptions.containsKey(countryName))
+            return flagCodesExceptions.get(countryName);
+        double stringSimilarity = 0;
+        String flagCode = "";
         for(Map.Entry<String, JsonElement> entry: ((JsonObject) jsonTree).entrySet()){
-            if(entry.getValue().getAsString().equals(countryName))
-                return entry.getKey().toString();
+
+            if(!entry.getKey().toString().contains("-")) { //we need to filter out flags of regions like flags of states in America, we don't want that
+                if (new JaccardSimilarity().apply(entry.getValue().toString(), countryName) > stringSimilarity) {
+                    stringSimilarity = new JaccardSimilarity().apply(entry.getValue().toString(), countryName);
+                    flagCode = entry.getKey().toString();
+                }
+            }
         }
-        return null;
+        return flagCode;
     }
 
 }

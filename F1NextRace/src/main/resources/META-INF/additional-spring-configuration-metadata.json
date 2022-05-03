@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "apiUrl.url",
+      "type": "java.lang.String",
+      "description": "The url of the API calls from the frontend, needed for CORS configuration."
+  }
+] }

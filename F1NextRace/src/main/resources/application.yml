@@ -1,0 +1,14 @@
+spring:
+  config:
+    activate:
+      on-profile: development
+frontend:
+  url: "http://localhost:4200"
+---
+
+spring:
+  config:
+    activate:
+      on-profile: production
+frontend:
+  url: "https://nextf1race.azurewebsites.net"
