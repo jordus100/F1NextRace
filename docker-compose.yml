@@ -1,0 +1,11 @@
+services:
+  frontend:
+    image: f1nextrace-frontend
+    ports:
+      - "80:80"
+
+  backend:
+    image: f1nextrace-backend
+    ports:
+      - "8080:8080"
+

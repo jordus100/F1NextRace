@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduledDataUpdater {
 
-    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.SECONDS)
+    @Scheduled(fixedRate = 1, timeUnit = TimeUnit.HOURS)
     public void updateRaceWeekend() {
         if(RaceWeekend.isInitialized()) {
             Date now = new Date();
