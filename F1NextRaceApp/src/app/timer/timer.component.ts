@@ -29,13 +29,6 @@ export class TimerComponent implements OnInit {
   private calcTimerValues(date: Date){
     let now: Date = new Date();
     let timeDifference: number = date.getTime() - now.getTime();
-    if(timeDifference<=0){
-      this.days = 0;
-      this.hours = 0;
-      this.minutes = 0;
-      this.seconds = 0;
-      return;
-    }
     timeDifference /= 1000;
     this.days = Math.floor(timeDifference / (60*60*24));
     timeDifference -= this.days * (60*60*24);
