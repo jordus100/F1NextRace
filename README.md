@@ -1,5 +1,5 @@
 # F1NextRace
-My first web project using Spring Boot and Angular, work in progress
+My first web project using Spring Boot and Angular, work in progress <br>
 Technologies used:
 Java
 Spring Boot
