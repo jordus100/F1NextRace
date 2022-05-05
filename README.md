@@ -1,5 +1,14 @@
 # F1NextRace
 My first web project using Spring Boot and Angular, work in progress
+Technologies used:
+Java
+Spring Boot
+Typescript
+Angular
+HTML/CSS
+Bootstrap
+Docker
+MS Azure
 
 The first usable working version has been now finished!
 To boot it up, you need to have the following software installed on your computer: <br>
